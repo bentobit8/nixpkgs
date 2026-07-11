@@ -215,7 +215,7 @@ rec {
           pkgs.python3
         ];
         passAsFile = [ "options" ];
-        options = builtins.unsafeDiscardStringContext (builtins.toJSON optionsNix);
+        options = builtins.replaceStrings [ (toString pkgs.path) ] [ "/nixpkgs" ] (builtins.toJSON optionsNix);
         # merge with an empty set if baseOptionsJSON is null to run markdown
         # processing on the input options
         baseJSON = if baseOptionsJSON == null then builtins.toFile "base.json" "{}" else baseOptionsJSON;
