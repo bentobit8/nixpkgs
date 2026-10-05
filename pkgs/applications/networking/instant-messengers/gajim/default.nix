@@ -25,7 +25,6 @@
   gst-libav,
   gst-plugins-good,
   libnice,
-  enableE2E ? true,
   enableSecrets ? true,
   libsecret,
   enableRST ? true,
@@ -41,16 +40,16 @@
   extraPythonPackages ? ps: [ ],
 }:
 
-python3.pkgs.buildPythonApplication rec {
+python3.pkgs.buildPythonApplication (finalAttrs: {
   pname = "gajim";
-  version = "2.4.6";
+  version = "2.6.0";
 
   src = fetchFromGitLab {
     domain = "dev.gajim.org";
     owner = "gajim";
     repo = "gajim";
-    tag = version;
-    hash = "sha256-QHfJ52uMDlE/rqqy7y2JIQLMOPaTp7eh4DEsPLBx6p8=";
+    tag = finalAttrs.version;
+    hash = "sha256-VxsfHZvS3m+j/xcd9BFcNZactAzG8kBdv1jDnkCghV4=";
   };
 
   pyproject = true;
@@ -60,11 +59,11 @@ python3.pkgs.buildPythonApplication rec {
     adwaita-icon-theme
     gtksourceview5
     glib-networking
+    gstreamer
+    gst-plugins-base
   ]
   ++ lib.optionals enableJingle [
     farstream
-    gstreamer
-    gst-plugins-base
     gst-libav
     gst-plugins-good
     libnice
@@ -115,12 +114,9 @@ python3.pkgs.buildPythonApplication rec {
       httpx
       h2
       truststore
+      pysequoia
     ]
     ++ httpx.optional-dependencies.socks
-    ++ lib.optionals enableE2E [
-      pycrypto
-      python-gnupg
-    ]
     ++ lib.optional enableRST docutils
     ++ extraPythonPackages python3.pkgs;
 
@@ -145,14 +141,17 @@ python3.pkgs.buildPythonApplication rec {
   meta = {
     homepage = "http://gajim.org/";
     description = "Jabber client written in PyGTK";
+    changelog = "https://dev.gajim.org/gajim/gajim/-/blob/${finalAttrs.src.tag}/ChangeLog";
     license = lib.licenses.gpl3Plus;
     maintainers = with lib.maintainers; [
       raskin
       hlad
       vbgl
     ];
+    donationPage = "https://liberapay.com/Gajim";
     downloadPage = "http://gajim.org/download/";
     platforms = lib.platforms.linux;
     mainProgram = "gajim";
+    identifiers.cpeParts = lib.meta.cpeFullVersionWithVendor "gajim" finalAttrs.version;
   };
-}
+})

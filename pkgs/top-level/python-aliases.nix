@@ -109,6 +109,7 @@ mapAliases {
   beancount_docverif = throw "'beancount_docverif' has been renamed to/replaced by 'beancount-docverif'"; # Converted to throw 2025-10-29
   beets-stable = lib.warn "beets-stable was aliased to beets, since upstream releases are frequent nowadays" self.beets; # added 2025-10-16
   beets-unstable = lib.warn "beets-unstable was aliased to beets, since upstream releases are frequent nowadays" self.beets; # added 2025-10-16
+  bilibili-api-python = throw "'bilibili-api-python' was removed because its source is unavailable"; # added 2026-07-07
   bimmer-connected = throw "'bimmer-connected' was removed because BMW started blocking third parties"; # added 2026-03-30
   bip_utils = throw "'bip_utils' has been renamed to/replaced by 'bip-utils'"; # Converted to throw 2025-10-29
   bjoern = throw "'bjoern' has been removed, as the upstream repository was unmaintained and it was using libraries with severe security issues."; # Added 2025-09-01
@@ -431,6 +432,7 @@ mapAliases {
   pyliblo = throw "pyliblo is unmaintained upstream and was removed from nixpkgs. Please use pyliblo3 instead"; # added 2025-06-23
   pylit = throw "'pylit' has been removed as it was broken and unmaintained upstream"; # Added 2025-11-29
   pymc3 = throw "'pymc3' has been renamed to/replaced by 'pymc'"; # Converted to throw 2025-10-29
+  pymedio = throw "pymedio was removed, as it is archived since 2025 in upstream. The modules 'dicom-numpy' and 'simpleitk' can be used as alternatives."; # added 2026-09-11
   pymelcloud = throw "'pymelcloud' has been renamed to/replaced by 'python-melcloud'"; # Converted to throw 2025-10-29
   PyMVGLive = throw "'PyMVGLive' has been renamed to/replaced by 'pymvglive'"; # Converted to throw 2025-10-29
   pymyq = throw "'pymyq' has been renamed to/replaced by 'python-myq'"; # Converted to throw 2025-10-29

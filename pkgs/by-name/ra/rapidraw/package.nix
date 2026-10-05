@@ -42,21 +42,26 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "rapidraw";
-  version = "1.5.6";
+  version = "1.5.8";
 
   src = fetchFromGitHub {
     owner = "CyberTimon";
     repo = "RapidRAW";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-pfOdq2Q7GLGbzcgFkrRiczMWnS5TImbayYE1VWenYuo=";
+    hash = "sha256-LbAEQwZeFeiKV6lVt8vh+mZpqlJ02RSHs0rZEMeMRc4=";
   };
 
-  cargoHash = "sha256-liWOY+Jq8Yqo0QsntKjq2ntMAacfFyHCm6yhQM+KwRA=";
+  cargoHash = "sha256-vx4+5aMxML5Cp1s7HKHSOYS4d4HaAGO2l6jMZuFPUsQ=";
 
   npmDeps = fetchNpmDeps {
     inherit (finalAttrs) src;
     hash = "sha256-JtkzeCt21KIEshvoCHWo1QoxUgvVJN1loJrUHgvV4qE=";
   };
+
+  patches = [
+    # Patch CVE-2026-64816
+    ./fix-cve-2026-64816.patch
+  ];
 
   nativeBuildInputs = [
     pkg-config

@@ -35,16 +35,16 @@ assert builtins.all (
 
 buildDotnetModule (finalAttrs: {
   pname = "github-runner";
-  version = "2.334.0";
+  version = "2.337.0";
 
   src = fetchFromGitHub {
     owner = "actions";
     repo = "runner";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-KSfzWwIf8Vpc8H0XM1tIqdZhdY/noZCeYLBvdWjqmLA=";
+    hash = "sha256-aM8GmgCkjgaipEDBjC5v6U61WPjCAdKnPEGQypfTzmA=";
     leaveDotGit = true;
     postFetch = ''
-      git -C $out rev-parse --short HEAD > $out/.git-revision
+      git -C $out rev-parse HEAD > $out/.git-revision
       rm -rf $out/.git
     '';
   };
@@ -67,8 +67,8 @@ buildDotnetModule (finalAttrs: {
     mkdir -p $TMPDIR/bin
     cat > $TMPDIR/bin/git <<EOF
     #!${runtimeShell}
-    if [ \$# -eq 1 ] && [ "\$1" = "rev-parse" ]; then
-      echo $(cat $TMPDIR/src/.git-revision)
+    if [ \$# -eq 2 ] && [ "\$1" = "rev-parse" ] && [ "\$2" = "HEAD" ]; then
+      cat $TMPDIR/src/.git-revision
       exit 0
     fi
     exec ${buildPackages.git}/bin/git "\$@"
@@ -111,6 +111,9 @@ buildDotnetModule (finalAttrs: {
   };
 
   postConfigure = ''
+    # Avoid deriving assembly metadata from the nondeterministic temporary Git commit.
+    export SourceRevisionId="$(cat .git-revision)"
+
     # Generate src/Runner.Sdk/BuildConstants.cs
     dotnet msbuild \
       -t:GenerateConstant \
@@ -210,6 +213,10 @@ buildDotnetModule (finalAttrs: {
     "RepositoryActionWithDockerfilePrepareActions_Repository"
     "RepositoryActionWithInvalidWrapperActionfile_Node"
     "RepositoryActionWithWrapperActionfile_PreSteps"
+  ]
+  ++ [
+    "GitHub.Runner.Common.Tests.Worker.ActionManagerL0.GetDownloadInfoAsync_OmitsDependencies_WhenEmpty"
+    "GitHub.Runner.Common.Tests.Worker.ActionManagerL0.GetDownloadInfoAsync_PropagatesDependencies_WhenPresent"
   ]
   ++ map (x: "GitHub.Runner.Common.Tests.DotnetsdkDownloadScriptL0.${x}") [
     "EnsureDotnetsdkBashDownloadScriptUpToDate"
@@ -347,7 +354,7 @@ buildDotnetModule (finalAttrs: {
     fi
 
     commit=$($out/bin/Runner.Listener --commit)
-    if [[ "$commit" != "$(git rev-parse HEAD)" ]]; then
+    if [[ "$commit" != "$(cat .git-revision)" ]]; then
       printf 'Unexpected commit %s' "$commit"
       exit 1
     fi
@@ -370,6 +377,7 @@ buildDotnetModule (finalAttrs: {
       kfollesdal
       aanderse
       zimbatm
+      osnyx
     ];
     platforms = [
       "x86_64-linux"

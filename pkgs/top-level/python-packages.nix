@@ -2052,8 +2052,6 @@ self: super: with self; {
 
   biliass = callPackage ../development/python-modules/biliass { };
 
-  bilibili-api-python = callPackage ../development/python-modules/bilibili-api-python { };
-
   billiard = callPackage ../development/python-modules/billiard { };
 
   binance-connector = callPackage ../development/python-modules/binance-connector { };
@@ -4120,6 +4118,8 @@ self: super: with self; {
 
   django-apscheduler = callPackage ../development/python-modules/django-apscheduler { };
 
+  django-async-backend = callPackage ../development/python-modules/django-async-backend { };
+
   django-auditlog = callPackage ../development/python-modules/django-auditlog { };
 
   django-auth-ldap = callPackage ../development/python-modules/django-auth-ldap {
@@ -5544,6 +5544,8 @@ self: super: with self; {
   feedgenerator = callPackage ../development/python-modules/feedgenerator { };
 
   feedparser = callPackage ../development/python-modules/feedparser { };
+
+  feedparser-sgmllib = callPackage ../development/python-modules/feedparser-sgmllib { };
 
   fenics-basix = callPackage ../development/python-modules/fenics-basix { };
 
@@ -7111,6 +7113,8 @@ self: super: with self; {
 
   hexdump = callPackage ../development/python-modules/hexdump { };
 
+  hf-gradio = callPackage ../development/python-modules/hf-gradio { };
+
   hf-transfer = callPackage ../development/python-modules/hf-transfer { };
 
   hf-xet = callPackage ../development/python-modules/hf-xet { };
@@ -7303,6 +7307,8 @@ self: super: with self; {
 
   httpcore = callPackage ../development/python-modules/httpcore { };
 
+  httpcore2 = callPackage ../development/python-modules/httpcore2 { };
+
   httpie = callPackage ../development/python-modules/httpie { };
 
   httpie-ntlm = callPackage ../development/python-modules/httpie-ntlm { };
@@ -7336,6 +7342,8 @@ self: super: with self; {
   httpx-sse = callPackage ../development/python-modules/httpx-sse { };
 
   httpx-ws = callPackage ../development/python-modules/httpx-ws { };
+
+  httpx2 = callPackage ../development/python-modules/httpx2 { };
 
   huawei-lte-api = callPackage ../development/python-modules/huawei-lte-api { };
 
@@ -7408,6 +7416,8 @@ self: super: with self; {
   hypothesis = callPackage ../development/python-modules/hypothesis { };
 
   hypothesis-auto = callPackage ../development/python-modules/hypothesis-auto { };
+
+  hypothesis-jsonschema = callPackage ../development/python-modules/hypothesis-jsonschema { };
 
   hypothesis_6_136 = callPackage ../development/python-modules/hypothesis/hypothesis_6_136.nix { };
 
@@ -10058,6 +10068,8 @@ self: super: with self; {
 
   mistune = callPackage ../development/python-modules/mistune { };
 
+  mistune_2 = callPackage ../development/python-modules/mistune/2.nix { };
+
   mitmproxy = callPackage ../development/python-modules/mitmproxy { };
 
   mitmproxy-linux = callPackage ../development/python-modules/mitmproxy-linux { };
@@ -12184,6 +12196,8 @@ self: super: with self; {
 
   paho-mqtt = callPackage ../development/python-modules/paho-mqtt/default.nix { };
 
+  paho-mqtt_1 = callPackage ../development/python-modules/paho-mqtt/1.nix { };
+
   paintcompiler = callPackage ../development/python-modules/paintcompiler { };
 
   palace = callPackage ../development/python-modules/palace { };
@@ -12811,6 +12825,8 @@ self: super: with self; {
   # List of unsupported plugins:
   # https://github.com/opensteno/plover_plugins_registry/blob/master/unsupported.json
   plover = plover_5;
+
+  plover-combo = callPackage ../development/python-modules/plover-combo { };
 
   plover-dict-commands = callPackage ../development/python-modules/plover-dict-commands { };
 
@@ -14471,8 +14487,6 @@ self: super: with self; {
   pymediainfo = callPackage ../development/python-modules/pymediainfo { };
 
   pymediaroom = callPackage ../development/python-modules/pymediaroom { };
-
-  pymedio = callPackage ../development/python-modules/pymedio { };
 
   pymee = callPackage ../development/python-modules/pymee { };
 
@@ -18147,6 +18161,8 @@ self: super: with self; {
 
   smarthab = callPackage ../development/python-modules/smarthab { };
 
+  smartthings-local = callPackage ../development/python-modules/smartthings-local { };
+
   smartypants = callPackage ../development/python-modules/smartypants { };
 
   smbprotocol = callPackage ../development/python-modules/smbprotocol { };
@@ -20733,6 +20749,8 @@ self: super: with self; {
 
   udatetime = callPackage ../development/python-modules/udatetime { };
 
+  udsoncan = callPackage ../development/python-modules/udsoncan { };
+
   udtools = callPackage ../development/python-modules/udtools { };
 
   ueagle = callPackage ../development/python-modules/ueagle { };
@@ -21158,6 +21176,8 @@ self: super: with self; {
   vnoise = callPackage ../development/python-modules/vnoise { };
 
   vobject = callPackage ../development/python-modules/vobject { };
+
+  vodozemac = callPackage ../development/python-modules/vodozemac { };
 
   voip-utils = callPackage ../development/python-modules/voip-utils { };
 

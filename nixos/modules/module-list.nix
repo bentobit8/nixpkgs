@@ -327,6 +327,7 @@
   ./programs/sysdig.nix
   ./programs/system-config-printer.nix
   ./programs/systemtap.nix
+  ./programs/tack.nix
   ./programs/tcpdump.nix
   ./programs/television.nix
   ./programs/throne.nix
@@ -558,6 +559,7 @@
   ./services/databases/victoriametrics.nix
   ./services/databases/victoriatraces.nix
   ./services/desktops/accountsservice.nix
+  ./services/desktops/adw-bluetooth.nix
   ./services/desktops/ayatana-indicators.nix
   ./services/desktops/bamf.nix
   ./services/desktops/blueman.nix
@@ -757,6 +759,7 @@
   ./services/logging/syslog-ng.nix
   ./services/logging/syslogd.nix
   ./services/logging/SystemdJournal2Gelf.nix
+  ./services/logging/udp514-journal.nix
   ./services/logging/ulogd.nix
   ./services/logging/vector.nix
   ./services/mail/automx2.nix
@@ -824,6 +827,7 @@
   ./services/misc/anki-sync-server.nix
   ./services/misc/apache-kafka.nix
   ./services/misc/atuin.nix
+  ./services/misc/aurral.nix
   ./services/misc/autobrr.nix
   ./services/misc/autofs.nix
   ./services/misc/autorandr.nix
@@ -871,7 +875,7 @@
   ./services/misc/gammu-smsd.nix
   ./services/misc/geoipupdate.nix
   ./services/misc/gitea.nix
-  ./services/misc/gitlab.nix
+  ./services/misc/gitlab/default.nix
   ./services/misc/gitolite.nix
   ./services/misc/gitweb.nix
   ./services/misc/gollum.nix
@@ -1649,6 +1653,7 @@
   ./services/web-apps/engelsystem.nix
   ./services/web-apps/ente.nix
   ./services/web-apps/fediwall.nix
+  ./services/web-apps/feishin.nix
   ./services/web-apps/fider.nix
   ./services/web-apps/filebrowser.nix
   ./services/web-apps/firefly-iii-data-importer.nix
@@ -1675,6 +1680,7 @@
   ./services/web-apps/haven.nix
   ./services/web-apps/healthchecks.nix
   ./services/web-apps/hedgedoc.nix
+  ./services/web-apps/hister.nix
   ./services/web-apps/hledger-web.nix
   ./services/web-apps/homebox.nix
   ./services/web-apps/homer.nix

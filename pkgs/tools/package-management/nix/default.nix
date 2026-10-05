@@ -197,19 +197,35 @@ lib.makeExtensible (
 
       nixComponents_2_34 =
         (nixDependencies.callPackage ./modular/packages.nix rec {
-          version = "2.34.7";
+          version = "2.34.8";
           inherit teams;
           otherSplices = generateSplicesForNixComponents "nixComponents_2_34";
           src = fetchFromGitHub {
             owner = "NixOS";
             repo = "nix";
             tag = version;
-            hash = "sha256-uj5KNW8Vdm60FCUxD2KsrCVH/WwoemvczWmmrb3Gvlo=";
+            hash = "sha256-Rvy1PmIUMGI0IS/kwDwmf/VrorU8v1iZYejssSVu1rY=";
           };
         }).appendPatches
           patches_common;
 
       nix_2_34 = addTests "nix_2_34" self.nixComponents_2_34.nix-everything;
+
+      nixComponents_2_35 =
+        (nixDependencies.callPackage ./modular/packages.nix rec {
+          version = "2.35.2";
+          inherit teams;
+          otherSplices = generateSplicesForNixComponents "nixComponents_2_35";
+          src = fetchFromGitHub {
+            owner = "NixOS";
+            repo = "nix";
+            tag = version;
+            hash = "sha256-C/YEm/5IPiAMxQH5aHlkwgQMkLqK7NVsudEWdlzBZAA=";
+          };
+        }).appendPatches
+          [ ];
+
+      nix_2_35 = addTests "nix_2_35" self.nixComponents_2_35.nix-everything;
 
       nixComponents_git =
         (nixDependencies.callPackage ./modular/packages.nix rec {
@@ -227,7 +243,7 @@ lib.makeExtensible (
 
       git = addTests "git" self.nixComponents_git.nix-everything;
 
-      latest = self.nix_2_34;
+      latest = self.nix_2_35;
 
       # Read ./README.md before bumping a major release
       stable = addFallbackPathsCheck self.nix_2_34;

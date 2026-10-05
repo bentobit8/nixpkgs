@@ -185,6 +185,7 @@ let
       X86_INTEL_LPSS = yes;
       X86_INTEL_PSTATE = yes;
       X86_AMD_PSTATE = whenAtLeast "5.17" yes;
+      AMD_PMF_UTIL_SUPPORT = whenAtLeast "7.3" yes;
       # Intel DPTF (Dynamic Platform and Thermal Framework) Support
       ACPI_DPTF = yes;
 
@@ -404,6 +405,9 @@ let
       # HAM radio
       HAMRADIO = whenOlder "7.1" yes;
       AX25 = whenOlder "7.1" module;
+
+      # Gate for the DINGHAI_PF module
+      DINGHAI = whenAtLeast "7.3" yes;
     }
     // lib.optionalAttrs (stdenv.hostPlatform.system == "aarch64-linux") {
       # Not enabled by default, hides modules behind it
@@ -708,6 +712,7 @@ let
 
       NTFS_FS = whenBetween "5.15" "6.9" no;
       NTFS_FS_POSIX_ACL = whenAtLeast "7.1" yes;
+      NTFS_FS_WOF_COMPRESSION = whenAtLeast "7.3" yes;
       NTFS3_LZX_XPRESS = whenAtLeast "5.15" yes;
       NTFS3_FS_POSIX_ACL = whenAtLeast "5.15" yes;
 
@@ -844,13 +849,15 @@ let
       # enable temporary caching of the last request_key() result
       KEYS_REQUEST_CACHE = yes;
       # randomized slab caches
-      RANDOM_KMALLOC_CACHES = whenAtLeast "6.6" yes;
+      RANDOM_KMALLOC_CACHES = whenBetween "6.6" "7.2" yes;
+      KMALLOC_PARTITION_CACHES = whenAtLeast "7.2" yes;
+      KMALLOC_PARTITION_RANDOM = whenAtLeast "7.2" yes;
 
       # NIST SP800-90A DRBG modes - enabled by most distributions
       #   and required by some out-of-tree modules (ShuffleCake)
       #   This does not include the NSA-backdoored Dual-EC mode from the same NIST publication.
-      CRYPTO_DRBG_HASH = yes;
-      CRYPTO_DRBG_CTR = yes;
+      CRYPTO_DRBG_HASH = whenOlder "7.2" yes;
+      CRYPTO_DRBG_CTR = whenOlder "7.2" yes;
 
       # Enable KFENCE
       # See: https://docs.kernel.org/dev-tools/kfence.html
@@ -1358,6 +1365,7 @@ let
         BINFMT_SCRIPT = yes;
         # For systemd-binfmt
         BINFMT_MISC = option yes;
+        BINFMT_MISC_BPF = whenAtLeast "7.3" (whenPlatformHasEBPFJit (option yes));
 
         # Required for EDID overriding
         FW_LOADER = yes;
@@ -1373,6 +1381,8 @@ let
         # Allos PCIe devices report errors with Advanced Error Reporting (AER).
         PCIEAER = yes;
         ACPI_APEI_PCIEAER = yes;
+        # PCIe link training status, e.g. on Cix P1
+        PCIE_CADENCE_DEBUGFS = whenAtLeast "7.3" (option yes);
 
         # Enable all available thermal governors
         THERMAL_GOV_BANG_BANG = yes;
@@ -1488,8 +1498,8 @@ let
             ACPI_HOTPLUG_CPU = yes;
             ACPI_HOTPLUG_MEMORY = yes;
             MEMORY_HOTPLUG = yes;
-            MEMORY_HOTPLUG_DEFAULT_ONLINE = whenOlder "6.14" yes;
-            MHP_DEFAULT_ONLINE_TYPE_ONLINE_AUTO = whenAtLeast "6.14" yes;
+            MEMORY_HOTPLUG_DEFAULT_ONLINE = whenOlder "6.12" yes;
+            MHP_DEFAULT_ONLINE_TYPE_ONLINE_AUTO = whenAtLeast "6.12" yes;
             MEMORY_HOTREMOVE = lib.mkIf (
               with stdenv.hostPlatform;
               isLoongArch64

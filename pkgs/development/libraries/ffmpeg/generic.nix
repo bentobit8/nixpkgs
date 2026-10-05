@@ -453,6 +453,15 @@ stdenv.mkDerivation (
       ++ optionals (lib.versionAtLeast version "5.1") [
         ./nvccflags-cpp14.patch
       ]
+      ++ optionals (lib.versionAtLeast version "8.1.2" && stdenv.hostPlatform.isLoongArch64) [
+        # https://code.ffmpeg.org/FFmpeg/FFmpeg/pulls/23825 (merged, but not backported to 8.1.x or 9.0.x)
+        # As git.ffmpeg.org deploys Anubis, we cannot fetch this patch reliably from there.
+        # So instead, we fetch it from Debian.
+        (fetchpatch2 {
+          url = "https://salsa.debian.org/multimedia-team/ffmpeg/-/raw/d52aea25bc9123bfaf61f7a7e5a0d9da01c8788d/debian/patches/0001-swscale-loongarch-fix-buffer-underflow-in-yuv2plane1.patch";
+          hash = "sha256-QRkb7z4Btyd9ZgV/1hh6Fb87IhkygFgVDqQdloXKL6Q=";
+        })
+      ]
       ++ optionals (lib.versionAtLeast version "7.0" && lib.versionOlder version "7.1.4") [
         (fetchpatch2 {
           name = "unbreak-hardcoded-tables.patch";
@@ -460,15 +469,7 @@ stdenv.mkDerivation (
           hash = "sha256-ulB5BujAkoRJ8VHou64Th3E94z6m+l6v9DpG7/9nYsM=";
         })
       ]
-      ++ optionals (lib.versionAtLeast version "6.1" && lib.versionOlder version "6.2") [
-        (fetchpatch2 {
-          # this can be removed post 6.1
-          name = "fix_build_failure_due_to_PropertyKey_EncoderID";
-          url = "https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/cb049d377f54f6b747667a93e4b719380c3e9475";
-          hash = "sha256-sxRXKKgUak5vsQTiV7ge8vp+N22CdTIvuczNgVRP72c=";
-        })
-      ]
-      ++ optionals (lib.versionOlder version "7.1.1") [
+      ++ optionals (lib.versionOlder version "7.1.1" && lib.versions.major version != "5") [
         (fetchpatch2 {
           name = "texinfo-7.1.patch";
           url = "https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/4d9cdf82ee36a7da4f065821c86165fe565aeac2";

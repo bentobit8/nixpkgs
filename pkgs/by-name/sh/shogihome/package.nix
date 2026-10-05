@@ -4,7 +4,8 @@
   buildNpmPackage,
   fetchFromGitHub,
   makeWrapper,
-  electron_40,
+  electron_42,
+  cacert,
   makeDesktopItem,
   copyDesktopItems,
   commandLineArgs ? [ ],
@@ -17,20 +18,20 @@
 }:
 
 let
-  electron = electron_40;
+  electron = electron_42;
 in
 buildNpmPackage (finalAttrs: {
   pname = "shogihome";
-  version = "1.27.3";
+  version = "1.29.0";
 
   src = fetchFromGitHub {
     owner = "sunfish-shogi";
     repo = "shogihome";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-25Iu/bKUCotJdQESxPPOiYehwn+D3RYnZiJfMWJ4cn0=";
+    hash = "sha256-vo9ZxiTJNPBVOlylmXbBzVzXCEr++JZRgHyJ0JYYstY=";
   };
 
-  npmDepsHash = "sha256-gWI21dPha7yX367r50U3C9wpX5/6oBzHGJNtFmG/GQ8=";
+  npmDepsHash = "sha256-1LQIhHCTx8ZY2r/kwkd+qPM1FNo4dxx2jDDTtBscemY=";
 
   postPatch = ''
     substituteInPlace package.json \
@@ -50,6 +51,11 @@ buildNpmPackage (finalAttrs: {
   env = {
     ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
     npm_config_build_from_source = "true";
+
+  }
+  // lib.optionalAttrs stdenv.hostPlatform.isDarwin {
+    # Prevent "unable to get local issuer certificate" error
+    NODE_EXTRA_CA_CERTS = "${cacert}/etc/ssl/certs/ca-bundle.crt";
   };
 
   nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [

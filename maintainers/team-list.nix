@@ -322,13 +322,7 @@ with lib.maintainers;
   };
 
   gnome-circle = {
-    members = [
-      aleksana
-      getchoo
-      michaelgrahamevans
-    ];
-    scope = "Maintain GNOME Circle applications.";
-    shortName = "GNOME Circle";
+    github = "gnome-circle";
   };
 
   golang = {
@@ -507,12 +501,11 @@ with lib.maintainers;
   matrix = {
     members = [
       ma27
-      mguentner
-      dandellion
       nickcao
       teutat3s
+      transcaffeine
     ];
-    scope = "Maintain the ecosystem around Matrix, a decentralized messenger.";
+    scope = "Maintain the foundational packages of the Matrix ecosystem.";
     shortName = "Matrix";
   };
 
@@ -520,7 +513,6 @@ with lib.maintainers;
     members = [
       alejandrosame
       aleksi
-      artturin
       emilytrau
       ericson2314
       jk
@@ -552,6 +544,7 @@ with lib.maintainers;
       dotlambda
       ma27
       provokateurin
+      staticdev
     ];
     scope = "Maintain Nextcloud, its tests and the integration of applications.";
     shortName = "Nextcloud";
@@ -714,6 +707,15 @@ with lib.maintainers;
     github = "security-review";
   };
 
+  stardust-xr = {
+    members = [
+      pandapip1
+      technobaboo
+    ];
+    scope = "Maintain Stardust XR packages";
+    shortName = "StardustXR";
+  };
+
   stdenv = {
     enableFeatureFreezePing = true;
     github = "stdenv";
@@ -734,7 +736,6 @@ with lib.maintainers;
       dduan
       samasaur
       stephank
-      trepetti
     ];
     scope = "Maintain Swift compiler suite for NixOS.";
     shortName = "Swift";

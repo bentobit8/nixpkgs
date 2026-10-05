@@ -20,8 +20,12 @@ let
     isFunction
     mapAttrs
     elem
+    meta
     recurseIntoAttrs
     ;
+
+  callSupportedTest =
+    test: if meta.availableOn pkgs.stdenv.hostPlatform test then callTest test else { };
 
   # TODO: remove when handleTest is gone (make sure nixosTests and nixos/release.nix#tests are unaffected)
   # TODO: when removing, also deprecate `test` attribute in ../lib/testing/run.nix
@@ -29,7 +33,7 @@ let
     val:
     if isAttrs val then
       if (val ? test) then
-        callTest val
+        callSupportedTest val
       else
         mapAttrs (n: s: if n == "passthru" then s else discoverTests s) val
     else if isFunction val then
@@ -120,7 +124,7 @@ let
         if tree ? recurseForDerivations && tree.recurseForDerivations then
           mapAttrs (k: findTests) (removeAttrs tree [ "recurseForDerivations" ])
         else
-          callTest tree;
+          callSupportedTest tree;
 
       runTest =
         arg:
@@ -241,6 +245,7 @@ in
   audiobookshelf = runTest ./audiobookshelf.nix;
   audit = runTest ./audit.nix;
   audit-testsuite = runTest ./audit-testsuite.nix;
+  aurral = runTest ./aurral.nix;
   auth-mysql = runTest ./auth-mysql.nix;
   authelia = runTest ./authelia.nix;
   auto-cpufreq = runTest ./auto-cpufreq.nix;
@@ -329,8 +334,16 @@ in
   };
   castopod = runTest ./castopod.nix;
   centrifugo = runTest ./centrifugo.nix;
-  ceph-multi-node = runTestOn [ "aarch64-linux" "x86_64-linux" ] ./ceph-multi-node.nix;
-  ceph-single-node = runTestOn [ "aarch64-linux" "x86_64-linux" ] ./ceph-single-node.nix;
+  ceph-multi-node-bluestore = runTestOn [ "aarch64-linux" "x86_64-linux" ] (
+    import ./ceph-multi-node-bluestore.nix { }
+  );
+  ceph-multi-node-bluestore-cephfs = runTestOn [ "aarch64-linux" "x86_64-linux" ] (
+    import ./ceph-multi-node-bluestore.nix { withCephfs = true; }
+  );
+  ceph-multi-node-deprecated-filestore = runTestOn [
+    "aarch64-linux"
+    "x86_64-linux"
+  ] ./ceph-multi-node-deprecated-filestore.nix;
   ceph-single-node-bluestore = runTestOn [
     "aarch64-linux"
     "x86_64-linux"
@@ -339,11 +352,16 @@ in
     "aarch64-linux"
     "x86_64-linux"
   ] ./ceph-single-node-bluestore-dmcrypt.nix;
+  ceph-single-node-deprecated-filestore = runTestOn [
+    "aarch64-linux"
+    "x86_64-linux"
+  ] ./ceph-single-node-deprecated-filestore.nix;
   certmgr = import ./certmgr.nix { inherit pkgs runTest; };
   cfssl = runTestOn [ "aarch64-linux" "x86_64-linux" ] ./cfssl.nix;
   cgit = runTest ./cgit.nix;
   charliecloud = runTest ./charliecloud.nix;
   chhoto-url = runTest ./chhoto-url.nix;
+  chipass = runTest ./chipass.nix;
   chromadb = runTest ./chromadb.nix;
   chromium = (handleTestOn [ "aarch64-linux" "x86_64-linux" ] ./chromium.nix { }).stable or { };
   chrony = runTestOn [ "aarch64-linux" "x86_64-linux" ] ./chrony.nix;
@@ -407,25 +425,25 @@ in
   corerad = runTest ./corerad.nix;
   corteza = runTest ./corteza.nix;
   cosmic = runTest {
-    imports = [ ./cosmic.nix ];
+    imports = [ ./cosmic ];
     _module.args.testName = "cosmic";
     _module.args.enableAutologin = false;
     _module.args.enableXWayland = true;
   };
   cosmic-autologin = runTest {
-    imports = [ ./cosmic.nix ];
+    imports = [ ./cosmic ];
     _module.args.testName = "cosmic-autologin";
     _module.args.enableAutologin = true;
     _module.args.enableXWayland = true;
   };
   cosmic-autologin-noxwayland = runTest {
-    imports = [ ./cosmic.nix ];
+    imports = [ ./cosmic ];
     _module.args.testName = "cosmic-autologin-noxwayland";
     _module.args.enableAutologin = true;
     _module.args.enableXWayland = false;
   };
   cosmic-noxwayland = runTest {
-    imports = [ ./cosmic.nix ];
+    imports = [ ./cosmic ];
     _module.args.testName = "cosmic-noxwayland";
     _module.args.enableAutologin = false;
     _module.args.enableXWayland = false;
@@ -548,6 +566,7 @@ in
   fastnetmon-advanced = runTest ./fastnetmon-advanced.nix;
   fcitx5 = runTest ./fcitx5;
   fedimintd = runTest ./fedimintd.nix;
+  feishin = handleTest ./feishin { };
   ferm = runTest ./ferm.nix;
   ferretdb = import ./ferretdb.nix { inherit pkgs runTest; };
   fider = runTest ./fider.nix;
@@ -576,6 +595,10 @@ in
     imports = [ ./firefox.nix ];
     _module.args.firefoxPackage = pkgs.firefox-esr-140;
   };
+  firefox-esr-153 = runTest {
+    imports = [ ./firefox.nix ];
+    _module.args.firefoxPackage = pkgs.firefox-esr-153;
+  };
   firefox-syncserver = runTest ./firefox-syncserver.nix;
   firefox_decrypt = runTest ./firefox_decrypt.nix;
   firefoxpwa = runTest ./firefoxpwa.nix;
@@ -598,6 +621,7 @@ in
   flannel = runTestOn [ "x86_64-linux" ] ./flannel.nix;
   flap-alerted = runTest ./flap-alerted.nix;
   flaresolverr = runTest ./flaresolverr.nix;
+  flarum = runTest ./flarum.nix;
   flood = runTest ./flood.nix;
   fluent-bit = runTest ./fluent-bit.nix;
   fluentd = runTest ./fluentd.nix;
@@ -649,6 +673,7 @@ in
   geth = runTest ./geth.nix;
   ghostunnel = runTest ./ghostunnel.nix;
   ghostunnel-modular = runTest ./ghostunnel-modular.nix;
+  git-pages-modular = runTest ./git-pages.nix;
   gitdaemon = runTest ./gitdaemon.nix;
   gitea = handleTest ./gitea.nix { giteaPackage = pkgs.gitea; };
   github-runner = runTest ./github-runner.nix;
@@ -731,6 +756,7 @@ in
     imports = [ ./hbase.nix ];
     _module.args.getPackage = pkgs: pkgs.hbase_2_5;
   };
+  hddtemp = runTest ./hddtemp.nix;
   headplane = runTest ./headplane.nix;
   headscale = runTest ./headscale.nix;
   healthchecks = runTest ./web-apps/healthchecks.nix;
@@ -745,9 +771,11 @@ in
   hibernate-systemd-stage-1 = handleTestOn [ "x86_64-linux" ] ./hibernate.nix {
     systemdStage1 = true;
   };
+  hister = runTest ./hister.nix;
   hitch = handleTest ./hitch { };
   hledger-web = runTest ./hledger-web.nix;
   hockeypuck = runTest ./hockeypuck.nix;
+  holo-daemon-modular-service = runTest ./holo-daemon-modular.nix;
   home-assistant = runTest ./home-assistant.nix;
   homebox = runTest ./homebox.nix;
   homebridge = runTest ./homebridge.nix;
@@ -1043,6 +1071,7 @@ in
   mysql-autobackup = handleTest ./mysql/mysql-autobackup.nix { };
   mysql-backup = handleTest ./mysql/mysql-backup.nix { };
   mysql-replication = handleTest ./mysql/mysql-replication.nix { };
+  mysql-secure-root = handleTest ./mysql/mysql-secure-root.nix { };
   n8n = runTest ./n8n.nix;
   nagios = runTestOn [ "x86_64-linux" "aarch64-linux" ] ./nagios.nix;
   nar-serve = runTest ./nar-serve.nix;
@@ -1551,6 +1580,8 @@ in
   sssd-ldap = handleTestOn [ "x86_64-linux" "aarch64-linux" ] ./sssd-ldap.nix { };
   sssd-legacy-config = handleTestOn [ "x86_64-linux" "aarch64-linux" ] ./sssd-legacy-config.nix { };
   stalwart = runTest ./stalwart/stalwart.nix;
+  stardust-xr-atmosphere = runTest ./stardust-xr/atmosphere.nix;
+  stardust-xr-flatland = runTest ./stardust-xr/flatland.nix;
   stargazer = runTest ./web-servers/stargazer.nix;
   starship = runTest ./starship.nix;
   startx = import ./startx.nix { inherit pkgs runTest; };
@@ -1734,6 +1765,7 @@ in
   ucarp = runTest ./ucarp.nix;
   udisks2 = runTest ./udisks2.nix;
   udp-over-tcp = runTest ./udp-over-tcp.nix;
+  udp514-journal = runTest ./udp514-journal.nix;
   ulogd = runTest ./ulogd/ulogd.nix;
   umami = runTest ./web-apps/umami.nix;
   umurmur = runTest ./umurmur.nix;
@@ -1759,6 +1791,7 @@ in
   userborn-static = runTest ./userborn-static.nix;
   ustreamer = runTest ./ustreamer.nix;
   utils = import ./utils { inherit runTest; };
+  utmp = runTest ./utmp.nix;
   uwsgi = runTest ./uwsgi.nix;
   v2ray = runTest ./v2ray.nix;
   varnish60 = runTest {

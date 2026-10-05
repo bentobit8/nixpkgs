@@ -39,6 +39,7 @@ assert lib.assertMsg (
   darwin,
   doxygen,
   editline,
+  fetchpatch2,
   flex,
   git,
   gtest,
