@@ -1785,10 +1785,10 @@ with self;
 
   ArchiveTar = buildPerlPackage {
     pname = "Archive-Tar";
-    version = "3.10";
+    version = "3.12";
     src = fetchurl {
-      url = "mirror://cpan/authors/id/B/BI/BINGOS/Archive-Tar-3.10.tar.gz";
-      hash = "sha256-irvDaMxHIwjiqWDEpOi258pJJFefxGPH+oemplbITlY=";
+      url = "mirror://cpan/authors/id/B/BI/BINGOS/Archive-Tar-3.12.tar.gz";
+      hash = "sha256-ARTvObZfSfiWgoOrR3Gdfoj5jXNg/jZJvjMcf1PVgyw=";
     };
     meta = {
       description = "Manipulates TAR archives";
@@ -5824,10 +5824,10 @@ with self;
 
   CompressRawBzip2 = buildPerlPackage {
     pname = "Compress-Raw-Bzip2";
-    version = "2.206";
+    version = "2.218";
     src = fetchurl {
-      url = "mirror://cpan/authors/id/P/PM/PMQS/Compress-Raw-Bzip2-2.206.tar.gz";
-      hash = "sha256-ISuB2xwK6CLRmShhmmA70QjLXVxHAPxn3HyxaeDMZSU=";
+      url = "mirror://cpan/authors/id/P/PM/PMQS/Compress-Raw-Bzip2-2.218.tar.gz";
+      hash = "sha256-iRU+ai69pSNJSTsHT6S3VJ/x+QU952E8GKXgXFtBX6g=";
     };
 
     # Don't build a private copy of bzip2.
@@ -5870,21 +5870,21 @@ with self;
 
   CompressRawZlib = buildPerlPackage {
     pname = "Compress-Raw-Zlib";
-    version = "2.206";
+    version = "2.222";
 
     src = fetchurl {
-      url = "mirror://cpan/authors/id/P/PM/PMQS/Compress-Raw-Zlib-2.206.tar.gz";
-      hash = "sha256-Rnhaajg6HIQ4lbf58l1ddZ58MFFZ+dHgSjYE63THc3Q=";
+      url = "mirror://cpan/authors/id/P/PM/PMQS/Compress-Raw-Zlib-2.222.tar.gz";
+      hash = "sha256-Hf19URplVifIGBXTDTurwo+luIRV/wP4sECZ3LUShrg=";
     };
 
     preConfigure = ''
       cat > config.in <<EOF
-        BUILD_ZLIB   = False
-        INCLUDE      = ${pkgs.zlib.dev}/include
-        LIB          = ${pkgs.zlib.out}/lib
-        OLD_ZLIB     = False
-        GZIP_OS_CODE = AUTO_DETECT
-        USE_ZLIB_NG  = False
+        BUILD_ZLIB    = False
+        ZLIB_INCLUDE  = ${pkgs.zlib.dev}/include
+        ZLIB_LIB      = ${pkgs.zlib.out}/lib
+        OLD_ZLIB      = False
+        GZIP_OS_CODE  = AUTO_DETECT
+        USE_ZLIB_NG   = False
       EOF
     '';
 
@@ -7702,17 +7702,21 @@ with self;
 
   CryptOpenSSLRSA = buildPerlPackage {
     pname = "Crypt-OpenSSL-RSA";
-    version = "0.35";
+    version = "0.41";
     src = fetchurl {
-      url = "mirror://cpan/authors/id/T/TO/TODDR/Crypt-OpenSSL-RSA-0.35.tar.gz";
-      hash = "sha256-XuvVWsBxY0yGSo549c+vuq9Dz4TAQyOgm3Hddr8CXMI=";
+      url = "mirror://cpan/authors/id/T/TI/TIMLEGGE/Crypt-OpenSSL-RSA-0.41.tar.gz";
+      hash = "sha256-gvqDmJe4jpwkW2Jl874m07yHnK5MeoFR+tSjB8M2aCI=";
     };
-    propagatedBuildInputs = [ CryptOpenSSLRandom ];
+    propagatedBuildInputs = [
+      CryptOpenSSLBignum
+      CryptOpenSSLRandom
+    ];
     env.NIX_CFLAGS_COMPILE = "-I${pkgs.openssl.dev}/include";
     env.NIX_CFLAGS_LINK = "-L${lib.getLib pkgs.openssl}/lib -lcrypto";
     env.OPENSSL_PREFIX = pkgs.openssl;
     buildInputs = [ CryptOpenSSLGuess ];
     meta = {
+      homepage = "https://github.com/cpan-authors/Crypt-OpenSSL-RSA";
       description = "RSA encoding and decoding, using the openSSL libraries";
       license = with lib.licenses; [
         artistic1
@@ -7723,10 +7727,10 @@ with self;
 
   CryptOpenSSLX509 = buildPerlPackage {
     pname = "Crypt-OpenSSL-X509";
-    version = "1.915";
+    version = "2.1.3";
     src = fetchurl {
-      url = "mirror://cpan/authors/id/J/JO/JONASBN/Crypt-OpenSSL-X509-1.915.tar.gz";
-      hash = "sha256-xNvBbE/CloV4I3v8MkWH/9eSSacQFQJlLbnjjUSJUX8=";
+      url = "mirror://cpan/authors/id/J/JO/JONASBN/Crypt-OpenSSL-X509-2.1.3.tar.gz";
+      hash = "sha256-CtllF1dGroRrBRCwOKofltLduMhg/pfOpvvcegVfn54=";
     };
     env.NIX_CFLAGS_COMPILE = "-I${pkgs.openssl.dev}/include";
     env.NIX_CFLAGS_LINK = "-L${lib.getLib pkgs.openssl}/lib -lcrypto";
@@ -8914,8 +8918,21 @@ with self;
       url = "mirror://cpan/authors/id/S/SB/SBECK/Date-Manip-6.98.tar.gz";
       hash = "sha256-rP2KYFGbpM0YHIpnqD1/ApxtmrTosCEtxH5B1iEP2kk=";
     };
+    # Remove when updating to the first release containing both CVE fixes.
+    patches = [
+      (fetchpatch {
+        name = "CVE-2026-60074.patch";
+        url = "https://security.metacpan.org/patches/D/Date-Manip/6.99/CVE-2026-60074-r1.patch";
+        hash = "sha256-leXFfzLyy0yBpBXgT3u3ZyFaIbsbJSFzVkdam9hb3+0=";
+      })
+      (fetchpatch {
+        name = "CVE-2026-60075.patch";
+        url = "https://security.metacpan.org/patches/D/Date-Manip/6.99/CVE-2026-60075-r1.patch";
+        hash = "sha256-vMsOrUhrfn8efKRzfJ+jaypOHER8MlUIob5u88n/TAw=";
+      })
+    ];
     # for some reason, parsing /etc/localtime does not work anymore - make sure that the fallback "/bin/date +%Z" will work
-    patchPhase = ''
+    postPatch = ''
       sed -i "s#/bin/date#${pkgs.coreutils}/bin/date#" lib/Date/Manip/TZ.pm
     '';
     doCheck = !stdenv.hostPlatform.isi686; # build freezes during tests on i686
@@ -14326,10 +14343,10 @@ with self;
 
   FinanceQuote = buildPerlPackage rec {
     pname = "Finance-Quote";
-    version = "1.68";
+    version = "1.70";
     src = fetchurl {
       url = "mirror://cpan/authors/id/B/BP/BPSCHUCK/Finance-Quote-${version}.tar.gz";
-      hash = "sha256-MuyDh8qZZr/iTob1TiR/mgt9d5mrwADM+k8oI6+iREE=";
+      hash = "sha256-XxrIe3j3b8nDAT2PRi1BpMuKDKCLqvnhvu3Fw7j0eRU=";
     };
     buildInputs = [
       DateManip
@@ -15852,20 +15869,23 @@ with self;
 
   HashSharedMem = buildPerlModule {
     pname = "Hash-SharedMem";
-    version = "0.005";
+    version = "0.006";
     src = fetchurl {
-      url = "mirror://cpan/authors/id/Z/ZE/ZEFRAM/Hash-SharedMem-0.005.tar.gz";
-      hash = "sha256-Mkd2gIYC973EStqpN4lTZUVAKakm+mEfMhyb9rlAu14=";
+      url = "mirror://cpan/authors/id/K/KS/KSTAR/Hash-SharedMem-0.006.tar.gz";
+      hash = "sha256-6gA2LUokkXUFYvJFHK61l0eDXZxWcthGPNlhwz7jh2E=";
     };
     env.NIX_CFLAGS_COMPILE = lib.optionalString stdenv.hostPlatform.isAarch64 "-mno-outline-atomics";
     buildInputs = [ ScalarString ];
+    # Project uses ExtUtils::MakeMaker, can use default `make` targets
+    buildPhase = null;
+    checkPhase = null;
+    installPhase = null;
     meta = {
       description = "Efficient shared mutable hash";
       license = with lib.licenses; [
         artistic1
         gpl1Plus
       ];
-      broken = stdenv.hostPlatform.isDarwin; # never built on Hydra https://hydra.nixos.org/job/nixpkgs/staging-next/perl534Packages.HashSharedMem.x86_64-darwin
     };
   };
 
@@ -17178,11 +17198,26 @@ with self;
 
   Imager = buildPerlPackage rec {
     pname = "Imager";
-    version = "1.031";
+    version = "1.034";
     src = fetchurl {
       url = "mirror://cpan/authors/id/T/TO/TONYC/Imager-${version}.tar.gz";
-      hash = "sha256-kL59G9/F7bfxfPgreeamYUxbAuv+Mm67b2afzaeRNAE=";
+      hash = "sha256-hrWizXGna4QJJJFSGl1WI4Qo8sN1AYMsmVxaMxJg+AM=";
     };
+    # Remove when updating to the first release containing both fixes.
+    patches = [
+      (fetchpatch2 {
+        name = "fix-32-bit-exif-ifd-offset-checks.patch";
+        url = "https://github.com/tonycoz/imager/commit/48ba8ac0749f89466b6e6681fb88cbdb51086ebd.patch?full_index=1";
+        includes = [ "imexif.c" ];
+        hash = "sha256-rpUeTsgSkCdzJsy3Ny0rU+KNL6xkSosfkDqzFb813Wo=";
+      })
+      (fetchpatch2 {
+        name = "fix-32-bit-exif-limit-checks.patch";
+        url = "https://github.com/tonycoz/imager/commit/6f1fd003a8e48c7e6e58b7019a04cc71bbfec2c3.patch?full_index=1";
+        includes = [ "imexif.c" ];
+        hash = "sha256-Ct7T/JHuxAIAjjuzoUhdAPlp0qPYKRQQqejsrcGXPko=";
+      })
+    ];
     buildInputs = [
       pkgs.freetype
       pkgs.fontconfig
@@ -17544,10 +17579,10 @@ with self;
 
   IOCompress = buildPerlPackage {
     pname = "IO-Compress";
-    version = "2.206";
+    version = "2.220";
     src = fetchurl {
-      url = "mirror://cpan/authors/id/P/PM/PMQS/IO-Compress-2.206.tar.gz";
-      hash = "sha256-fTBiuaSU91fo0GFPIg2D8icxu9oa6198/w5yqD9DPTU=";
+      url = "mirror://cpan/authors/id/P/PM/PMQS/IO-Compress-2.220.tar.gz";
+      hash = "sha256-nZbqKR8sVO82fHOWuFfZO6GsHEsvG84T7Yo+Xz7rtic=";
     };
     propagatedBuildInputs = [
       CompressRawBzip2
@@ -18255,10 +18290,10 @@ with self;
 
   JavaScriptMinifierXS = buildPerlPackage {
     pname = "JavaScript-Minifier-XS";
-    version = "0.15";
+    version = "0.16";
     src = fetchurl {
-      url = "mirror://cpan/authors/id/G/GT/GTERMARS/JavaScript-Minifier-XS-0.15.tar.gz";
-      hash = "sha256-XZsDT1jwtv9bZGR708WpzgWypw7e4zn7wxc67nR8wFA=";
+      url = "mirror://cpan/authors/id/G/GT/GTERMARS/JavaScript-Minifier-XS-0.16.tar.gz";
+      hash = "sha256-dQNOh2k568PdSM4uuvBgRLBu1XqzoYY/BT+VDphNmVQ=";
     };
     buildInputs = [ TestDiagINC ];
     meta = {
@@ -22925,6 +22960,9 @@ with self;
       url = "mirror://cpan/authors/id/J/JB/JBERGER/Mojo-SAML-0.07.tar.gz";
       hash = "sha256-csJMrNtvHXp14uqgBDfHFKv1eafSENSqTT8g8e/0cQ0=";
     };
+    patches = [
+      ../development/perl-modules/MojoSAML-select-PKCS-1-padding.patch
+    ];
     buildInputs = [ ModuleBuildTiny ];
     propagatedBuildInputs = [
       CryptOpenSSLRSA
@@ -25491,10 +25529,10 @@ with self;
 
   NetDNS = buildPerlPackage {
     pname = "Net-DNS";
-    version = "1.48";
+    version = "1.56";
     src = fetchurl {
-      url = "mirror://cpan/authors/id/N/NL/NLNETLABS/Net-DNS-1.48.tar.gz";
-      hash = "sha256-5V8+caMcK4VgJL9QYbEWCwP4edgBNUFPONgiBHaUR1M=";
+      url = "mirror://cpan/authors/id/N/NL/NLNETLABS/Net-DNS-1.56.tar.gz";
+      hash = "sha256-WTDjn3aJWzgMfKEfwINS0VrXHEH+hMEt+2oyLRf2aUY=";
     };
     propagatedBuildInputs = [ DigestHMAC ];
     makeMakerFlags = [ "--noonline-tests" ];
@@ -25953,19 +25991,18 @@ with self;
     };
   };
 
-  NetOAuth = buildPerlModule {
+  NetOAuth = buildPerlPackage {
     pname = "Net-OAuth";
-    version = "0.28";
+    version = "0.33";
     src = fetchurl {
-      url = "mirror://cpan/authors/id/K/KG/KGRENNAN/Net-OAuth-0.28.tar.gz";
-      hash = "sha256-e/wxnaCsV44Ali81o1DPUREKOjEwFtH9wwciAooikEw=";
+      url = "mirror://cpan/authors/id/R/RR/RRWO/Net-OAuth-0.33.tar.gz";
+      hash = "sha256-BqKQwTvBycKs7jOnkImzLzBHlkkl1OqZLrbBzD2N9sE=";
     };
     buildInputs = [ TestWarn ];
     propagatedBuildInputs = [
       ClassAccessor
       ClassDataInheritable
-      DigestHMAC
-      DigestSHA1
+      CryptSysRandom
       LWP
     ];
     meta = {
@@ -33002,10 +33039,10 @@ with self;
 
   TemplateToolkit = buildPerlPackage {
     pname = "Template-Toolkit";
-    version = "3.101";
+    version = "3.106";
     src = fetchurl {
-      url = "mirror://cpan/authors/id/A/AB/ABW/Template-Toolkit-3.101.tar.gz";
-      hash = "sha256-0qMt1sIeSzfGqT34CHyp6IDPrmE6Pl766jB7C9yu21g=";
+      url = "mirror://cpan/authors/id/T/TO/TODDR/Template-Toolkit-3.106.tar.gz";
+      hash = "sha256-x0dAUL6AIB8ftV8KVpucCrbBw/DOu9fmAb2ptARu7IU=";
     };
     doCheck = !stdenv.hostPlatform.isDarwin;
     propagatedBuildInputs = [ AppConfig ];
@@ -33416,7 +33453,7 @@ with self;
     checkPhase = ''
       patchShebangs ./t ./scripts/yath
       export AUTOMATED_TESTING=1
-      ./scripts/yath test -j $NIX_BUILD_CORES
+      ./scripts/yath test -j ${if stdenv.hostPlatform.isDarwin then "1" else "$NIX_BUILD_CORES"}
     '';
 
     # The t/integration/preload.t test is broken on riscv64 & powerpc64
@@ -33444,7 +33481,6 @@ with self;
         gpl1Plus
       ];
       mainProgram = "yath";
-      broken = stdenv.hostPlatform.isDarwin; # never built on Hydra https://hydra.nixos.org/job/nixpkgs/staging-next/perl534Packages.Test2Harness.x86_64-darwin
     };
   };
 
@@ -39340,10 +39376,10 @@ with self;
 
   YAMLSyck = buildPerlPackage {
     pname = "YAML-Syck";
-    version = "1.45";
+    version = "1.47";
     src = fetchurl {
-      url = "mirror://cpan/authors/id/T/TO/TODDR/YAML-Syck-1.45.tar.gz";
-      hash = "sha256-8t4a+08MVsNubVJgqgvSyPGOTYUAnc9YQiBOoqf7w98=";
+      url = "mirror://cpan/authors/id/T/TO/TODDR/YAML-Syck-1.47.tar.gz";
+      hash = "sha256-ZyGWyhwCHjxo9LX3tK7DBa1HG7v0SMU8fkADTW67fh0=";
     };
     env.NIX_CFLAGS_COMPILE = "-std=gnu11";
     meta = {

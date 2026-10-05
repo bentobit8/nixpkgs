@@ -5,7 +5,6 @@
   avahi,
   bison,
   cairo,
-  curl,
   dbus,
   faad2,
   fetchFromGitLab,
@@ -26,6 +25,7 @@
   libxinerama,
   libxpm,
   libarchive,
+  libaacs,
   libass,
   libbluray-full,
   libcaca,
@@ -82,10 +82,8 @@
   wayland-protocols,
   wayland-scanner,
   wrapGAppsHook3,
-  writeShellScript,
   libxcb-keysyms,
   zlib,
-
   chromecastSupport ? true,
   jackSupport ? false,
   onlyLibVLC ? false,
@@ -103,14 +101,14 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "${optionalString onlyLibVLC "lib"}vlc";
-  version = "3.0.23-2";
+  version = "3.0.24";
 
   src = fetchFromGitLab {
     domain = "code.videolan.org";
     owner = "videolan";
     repo = "vlc";
     rev = finalAttrs.version;
-    hash = "sha256-vg/kKNrIpGF7Olz8EiA1ZsW5SB4iHlvFbREDp4JokB0=";
+    hash = "sha256-WzgWspA1Jpc6FZ3kaEsxNEOI3Xj37Zp43NNbn6LamXg=";
   };
 
   depsBuildBuild = optionals waylandSupport [ pkg-config ];
@@ -152,6 +150,7 @@ stdenv.mkDerivation (finalAttrs: {
     libGL
     libsm
     libarchive
+    libaacs
     libass
     libbluray-full
     libcaca
@@ -246,7 +245,7 @@ stdenv.mkDerivation (finalAttrs: {
   postPatch = ''
     echo "$version" > src/revision.txt
     substituteInPlace modules/text_renderer/freetype/platform_fonts.h \
-      --replace \
+      --replace-fail \
         /usr/share/fonts/truetype/freefont \
         ${freefont_ttf}/share/fonts/truetype
   ''
@@ -255,7 +254,7 @@ stdenv.mkDerivation (finalAttrs: {
   # https://www.lua.org/wshop13/Jericke.pdf#page=39
   + lib.optionalString (!stdenv.hostPlatform.canExecute stdenv.buildPlatform) ''
     substituteInPlace share/Makefile.am \
-      --replace $'.luac \\\n' $'.lua \\\n'
+      --replace-fail $'.luac \\\n' $'.lua \\\n'
   '';
 
   enableParallelBuilding = true;
@@ -299,6 +298,7 @@ stdenv.mkDerivation (finalAttrs: {
   # depends on a qt5.qttranslations that doesn't build, even though it
   # should be the same as pkgsBuildBuild.qt5.qttranslations.
   postFixup = ''
+    patchelf --add-rpath ${libaacs}/lib "$out/lib/vlc/plugins/access/liblibbluray_plugin.so"
     patchelf --add-rpath ${libv4l}/lib "$out/lib/vlc/plugins/access/libv4l2_plugin.so"
     find $out/lib/vlc/plugins -exec touch -d @1 '{}' ';'
     ${

@@ -56,6 +56,8 @@ let
 
         apron = callPackage ../development/ocaml-modules/apron { };
 
+        apronext = callPackage ../development/ocaml-modules/apronext { };
+
         argon2 = callPackage ../development/ocaml-modules/argon2 { };
 
         arg-complete = callPackage ../development/ocaml-modules/arg-complete { };
@@ -266,6 +268,8 @@ let
         cmdliner_1_0 = cmdliner.override { version = "1.0.4"; };
 
         cmdliner_1 = cmdliner.override { version = "1.3.0"; };
+
+        cmon = callPackage ../development/ocaml-modules/cmon { };
 
         cohttp = callPackage ../development/ocaml-modules/cohttp { };
 
@@ -786,6 +790,8 @@ let
 
         graphql_ppx = callPackage ../development/ocaml-modules/graphql_ppx { };
 
+        grenier = callPackage ../development/ocaml-modules/grenier { };
+
         gsl = callPackage ../development/ocaml-modules/gsl {
           inherit (pkgs) gsl;
         };
@@ -1115,6 +1121,8 @@ let
 
         letters = callPackage ../development/ocaml-modules/letters { };
 
+        libabsolute = callPackage ../development/ocaml-modules/libabsolute { };
+
         libc = callPackage ../development/ocaml-modules/libc { };
 
         lilv = callPackage ../development/ocaml-modules/lilv {
@@ -1146,6 +1154,8 @@ let
         logs-syslog = callPackage ../development/ocaml-modules/logs-syslog { };
 
         lreplay = callPackage ../development/ocaml-modules/lreplay { };
+
+        lrgrep = callPackage ../development/ocaml-modules/lrgrep { };
 
         lru = callPackage ../development/ocaml-modules/lru { };
 
@@ -1750,6 +1760,8 @@ let
         phylogenetics = callPackage ../development/ocaml-modules/phylogenetics { };
 
         piaf = callPackage ../development/ocaml-modules/piaf { };
+
+        picasso = callPackage ../development/ocaml-modules/picasso { };
 
         piqi = callPackage ../development/ocaml-modules/piqi { };
 

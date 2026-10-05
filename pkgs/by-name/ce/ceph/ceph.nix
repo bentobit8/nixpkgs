@@ -393,10 +393,9 @@ stdenv.mkDerivation {
     pythonEnv = ceph-python-env;
     tests = {
       inherit (nixosTests)
-        ceph-multi-node
-        ceph-single-node
+        ceph-multi-node-bluestore
+        ceph-multi-node-bluestore-cephfs
         ceph-single-node-bluestore
-        ceph-single-node-bluestore-dmcrypt
         ;
     };
   };

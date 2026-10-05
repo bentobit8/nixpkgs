@@ -5,7 +5,7 @@
   makeBinaryWrapper,
   electron_42,
   nodejs-slim_24,
-  pnpm_10,
+  pnpm_10_latest,
   fetchPnpmDeps,
   pnpmConfigHook,
   darwin,
@@ -17,11 +17,12 @@
   gnugrep,
   podman,
   krunkit,
+  extraPackages ? [ ],
 }:
 
 let
   nodejs-slim = nodejs-slim_24;
-  pnpm = pnpm_10.override { inherit nodejs-slim; };
+  pnpm = pnpm_10_latest.override { inherit nodejs-slim; };
   electron = electron_42;
   appName = "Podman Desktop";
 in
@@ -54,7 +55,11 @@ stdenv.mkDerivation (finalAttrs: {
 
         sed -i -E "s/nodejs_[0-9]+/nodejs_$new_node_major/g" "$PKG_FILE"
         sed -i -E "s/electron_[0-9]+/electron_$new_electron_major/g" "$PKG_FILE"
-        sed -i -E "s/pnpm_[0-9]+/pnpm_$new_pnpm_major/g" "$PKG_FILE"
+        new_pnpm_attr="pnpm_$new_pnpm_major"
+        if [ "$new_pnpm_major" = 10 ]; then
+          new_pnpm_attr=pnpm_10_latest
+        fi
+        sed -i -E "s/pnpm_[0-9]+(_latest)?/$new_pnpm_attr/g" "$PKG_FILE"
       '';
     }))
     (nix-update-script {
@@ -122,7 +127,9 @@ stdenv.mkDerivation (finalAttrs: {
   installPhase =
     let
       prefixPackages = lib.makeBinPath (
-        [ podman ] ++ lib.optional (lib.meta.availableOn stdenv.hostPlatform krunkit) krunkit
+        [ podman ]
+        ++ lib.optional (lib.meta.availableOn stdenv.hostPlatform krunkit) krunkit
+        ++ extraPackages
       );
       commonWrapperArgs = "--prefix PATH : ${prefixPackages}";
     in

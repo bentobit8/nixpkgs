@@ -36,7 +36,7 @@ let
 
   pname = "librewolf-bin-unwrapped";
 
-  version = "152.0.4-1";
+  version = "156.0.1-1";
 in
 
 stdenv.mkDerivation {
@@ -46,8 +46,8 @@ stdenv.mkDerivation {
     url = "https://codeberg.org/api/packages/librewolf/generic/librewolf/${version}/librewolf-${version}-${arch}-package.tar.xz";
     hash =
       {
-        x86_64-linux = "sha256-4vmsv93ENtteE18uGJF2ZEhaRA3nGJg//WYYdBREIig=";
-        aarch64-linux = "sha256-Q1vT/9qOs2AiMRsLcofF7F2Y+5QJJloI/QSVZwA9gC8=";
+        x86_64-linux = "sha256-2D6GwlqhiHdz7i6+9lWWBHZ3XHL/w9/ffCeZzYoOpLc=";
+        aarch64-linux = "sha256-v+w2zgv+HtTii3ifufOcYtaGFOE3WD/dDkTuaZmmOPk=";
       }
       .${stdenv.hostPlatform.system} or throwSystem;
   };
@@ -109,7 +109,6 @@ stdenv.mkDerivation {
     maintainers = with lib.maintainers; [
       azahi
       eclairevoyant
-      dwrege
     ];
     platforms = builtins.attrNames mozillaPlatforms;
     mainProgram = "librewolf";

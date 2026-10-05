@@ -8,16 +8,17 @@
   nixosTests,
   nix-update-script,
 }:
-buildDotnetModule rec {
+buildDotnetModule (finalAttrs: {
   pname = "technitium-dns-server";
-  version = "15.2.0";
+  version = "15.5.1";
+
+  __structuredAttrs = true;
 
   src = fetchFromGitHub {
     owner = "TechnitiumSoftware";
     repo = "DnsServer";
-    tag = "v${version}";
-    hash = "sha256-464jhswTOJnQnxetl9hH5U3aDP0RXzJTicot9nWzpAo=";
-    name = "${pname}-${version}";
+    tag = "v${finalAttrs.version}";
+    hash = "sha256-h6GhWVqv+SRpJberH/xJ2bny1j+RFM7FI1E+LxuhLOw=";
   };
 
   dotnet-sdk = dotnetCorePackages.sdk_10_0;
@@ -41,12 +42,6 @@ buildDotnetModule rec {
     libmsquic
   ];
 
-  # Confirmed correct by upstream, remove when fixed in a release:
-  # https://github.com/TechnitiumSoftware/DnsServer/issues/1967
-  patches = [
-    ./dnssec-do-bit-fix.patch
-  ];
-
   passthru.tests = {
     inherit (nixosTests) technitium-dns-server;
   };
@@ -65,4 +60,4 @@ buildDotnetModule rec {
     ];
     platforms = lib.platforms.linux;
   };
-}
+})

@@ -17,9 +17,9 @@
   libjpeg,
   makeDesktopItem,
   freetype,
-  mumble,
   unstableGitUpdater,
   bc,
+  buildPackages,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -33,6 +33,11 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-OszPRlS5NTvajDZhtGw2wa275O8YodkIgiBz3POouYs=";
   };
 
+  makeFlags = [
+    "ARCH=${stdenv.hostPlatform.parsed.cpu.name}"
+    "NO_STRIP=1"
+  ];
+
   nativeBuildInputs = [
     copyDesktopItems
     makeBinaryWrapper
@@ -43,17 +48,18 @@ stdenv.mkDerivation (finalAttrs: {
 
   buildInputs = [
     SDL2
-    libGL
-    openal
     curl
-    speex
-    opusfile
+    freetype
+    libGL
+    libjpeg
     libogg
     libvorbis
-    libjpeg
-    freetype
-    mumble
+    openal
+    opusfile
+    speex
   ];
+
+  depsBuildBuild = [ buildPackages.stdenv.cc ];
 
   enableParallelBuilding = true;
 

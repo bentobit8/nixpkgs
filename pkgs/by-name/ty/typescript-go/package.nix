@@ -3,6 +3,7 @@
   buildGo126Module,
   fetchFromGitHub,
   _experimental-update-script-combinators,
+  versionCheckHook,
   nix-update-script,
   writeShellApplication,
   nix,
@@ -13,19 +14,22 @@
 let
   buildGoModule = buildGo126Module;
 in
-buildGoModule {
+buildGoModule (finalAttrs: {
   pname = "typescript-go";
-  version = "0-unstable-2026-05-20";
+  version = "7.0.2";
+
+  __structuredAttrs = true;
 
   src = fetchFromGitHub {
     owner = "microsoft";
-    repo = "typescript-go";
-    rev = "2cf002eed790973677ee285b54bd1687ac2c76cb";
-    hash = "sha256-ViKlU1J8VLjoxQlPpjpijVN4XR63IhZ5o+sO4nt2ZgQ=";
-    fetchSubmodules = false;
+    repo = "typescript";
+    tag = "v${finalAttrs.version}";
+    hash = "sha256-j1AY4sf/Jb6uwOah35lrYooc7BnSeaZ2NO6Fx1zMj60=";
   };
 
-  vendorHash = "sha256-n2wBDcMSKQGUJlTgCuJbKPTYOCiwkMpbvavqIrRvzS8=";
+  modRoot = "tsc";
+
+  vendorHash = "sha256-q6dMb2ab4uZ3GTrcA7v2JzfmOM+ZzBcJN6gKOpLfM/k=";
 
   ldflags = [
     "-s"
@@ -38,21 +42,21 @@ buildGoModule {
     "cmd/tsgo"
   ];
 
-  doInstallCheck = true;
-  installCheckPhase = ''
-    runHook preInstallCheck
-
-    version="$("$out/bin/tsgo" --version)"
-    [[ "$version" == *"7.0.0"* ]]
-
-    runHook postInstallCheck
+  postInstall = ''
+    ln -s "$out/bin/tsgo" "$out/bin/tsc"
   '';
+
+  nativeInstallCheckInputs = [
+    versionCheckHook
+  ];
+  doInstallCheck = true;
 
   passthru = {
     updateScript = _experimental-update-script-combinators.sequence [
       (nix-update-script {
         extraArgs = [
-          "--version=branch"
+          "--use-github-releases"
+          "--version-regex=^v([\\d.]+)$"
           "--src-only"
         ];
       })
@@ -66,7 +70,7 @@ buildGoModule {
         ];
         text = ''
           new_src="$(nix-build --attr 'pkgs.typescript-go.src' --no-out-link)"
-          new_go_major_minor="$(grep --only-matching --perl-regexp '^go \K([0-9]+\.[0-9]+)' "$new_src/go.mod")"
+          new_go_major_minor="$(grep --only-matching --perl-regexp '^go \K([0-9]+\.[0-9]+)' "$new_src/tsc/go.mod")"
           sed -i -E "s/buildGo[0-9]+Module/buildGo''${new_go_major_minor//./}Module/g" '${toString ./package.nix}'
         '';
       }))
@@ -80,11 +84,12 @@ buildGoModule {
 
   meta = {
     description = "Go implementation of TypeScript";
-    homepage = "https://github.com/microsoft/typescript-go";
+    homepage = "https://github.com/microsoft/typescript";
+    changelog = "https://github.com/microsoft/typescript/releases/tag/v${finalAttrs.version}";
     license = lib.licenses.asl20;
     maintainers = with lib.maintainers; [
       kachick
     ];
-    mainProgram = "tsgo";
+    mainProgram = "tsc";
   };
-}
+})

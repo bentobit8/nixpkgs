@@ -13,7 +13,7 @@
   jq,
   moreutils,
   nodejs,
-  pnpm_10,
+  pnpm_10_latest,
   fetchPnpmDeps,
   pnpmConfigHook,
   cacert,
@@ -23,7 +23,7 @@
 
 let
   pname = "zammad";
-  version = "7.1.1";
+  version = "7.1.3";
 
   src = applyPatches {
     src = fetchFromGitHub (lib.importJSON ./source.json);
@@ -74,7 +74,7 @@ stdenvNoCC.mkDerivation {
     valkey
     postgresql
     pnpmConfigHook
-    pnpm_10
+    pnpm_10_latest
     nodejs
     procps
     cacert
@@ -84,7 +84,7 @@ stdenvNoCC.mkDerivation {
 
   pnpmDeps = fetchPnpmDeps {
     inherit pname src;
-    pnpm = pnpm_10;
+    pnpm = pnpm_10_latest;
 
     fetcherVersion = 3;
     hash = "sha256-JG1VhG56L1bDyrVOjP4MFB5h//dVchgnrHiqhGNIuw4=";
@@ -134,6 +134,7 @@ stdenvNoCC.mkDerivation {
   };
 
   meta = {
+    changelog = "https://zammad.com/en/product/releases/${lib.replaceString "." "-" version}";
     description = "Web-based, open source user support/ticketing solution";
     homepage = "https://zammad.org";
     license = lib.licenses.agpl3Plus;

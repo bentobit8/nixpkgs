@@ -10,13 +10,13 @@
 
 buildGoModule (finalAttrs: {
   pname = "VictoriaLogs";
-  version = "1.51.0";
+  version = "1.52.1";
 
   src = fetchFromGitHub {
     owner = "VictoriaMetrics";
     repo = "VictoriaLogs";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-8rUDMV7bxMxyU0NYIMFSqGzSMwGogKFDliGXf4VSoCI=";
+    hash = "sha256-V4TWpv72LJ0FUYruwXvhmCpOLQh5l+7Of7aJS8vF6J0=";
   };
 
   vendorHash = null;
@@ -49,7 +49,7 @@ buildGoModule (finalAttrs: {
 
   passthru = {
     tests = lib.recurseIntoAttrs nixosTests.victorialogs;
-    updateScript = nix-update-script { };
+    updateScript = nix-update-script { extraArgs = [ "--version-regex=v(1\\.52\\.[0-9]+)" ]; };
   };
 
   meta = {
